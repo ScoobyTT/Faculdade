@@ -1,0 +1,98 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct pilha
+{
+    int numero;
+    struct pilha *proximo;
+}legalsupermercados;
+
+
+void insere(legalsupermercados **topo)
+{
+    legalsupermercados *novo;
+    legalsupermercados *aux;
+    aux=*topo;
+    novo = (legalsupermercados *)malloc(sizeof(legalsupermercados));
+    if(novo!=NULL)
+    {
+        scanf("%d",&novo->numero);
+
+        if(*topo == NULL)
+        {
+            novo->proximo=NULL;
+            *topo=novo;
+
+        }
+        else
+        {
+            while(aux->proximo != NULL)
+             {
+
+                    aux= aux->proximo;
+              }
+              novo->proximo = NULL;
+              aux->proximo = novo;
+        }
+
+    }
+
+}
+
+void excluir(legalsupermercados **topo)
+{
+    legalsupermercados *aux;
+
+    aux=*topo;
+    if(aux==NULL)
+    {
+        printf("fila vazia\n");
+    }
+    else
+    {
+
+
+
+
+    aux=(*topo)->proximo;
+    free(*topo);
+    *topo=aux;
+    }
+
+}
+
+void listar(legalsupermercados *topo)
+{
+    legalsupermercados *aux;
+    aux=topo;
+
+
+    while(aux!=NULL)
+    {
+        printf("%d ",aux->numero);
+        aux= aux->proximo;
+    }
+    printf("\n");
+}
+
+int main()
+{
+    int deseja;
+    legalsupermercados *topo=NULL;
+    while(1)
+    {
+        scanf("%d",&deseja);
+        if(deseja==1)
+            insere(&topo);
+        if(deseja==2)
+            excluir(&topo);
+        if(deseja==3)
+        {
+            listar(topo);
+
+        }
+
+        if(deseja==0)
+            return 0;
+    }
+}
