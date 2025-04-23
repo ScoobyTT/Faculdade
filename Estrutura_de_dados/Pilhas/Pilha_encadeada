@@ -1,0 +1,87 @@
+package atividadeDePilhaEncadeada;
+
+import pilhaEncadeada.No;
+
+public class Pilha {
+	
+	private No topo;
+	private int tam;
+	
+	public boolean isEmpty() {
+		if(tam == 0) {
+			return true;
+		}else {
+			return false;
+		}
+		
+	}
+	
+	public void push(Object elemento) {
+		No novoNo = new No();
+		novoNo.setElemento(elemento);
+		novoNo.setAnterior(topo);
+		topo = novoNo;
+		tam ++;
+	}
+	
+	
+public Object pop() {
+	if(!isEmpty()) {
+		Object temp = topo.getElemento();
+		topo=topo.getAnterior();
+		tam--;
+		return temp;
+	}else {
+		System.out.println("Pilha Vazia");
+		return null;
+	}
+}
+
+public Object top() {
+	if(!isEmpty()){
+		return topo.getElemento();
+	}else{
+		System.out.println("Pilha Vazia");
+		return null;
+	}
+}
+
+	public int size() {
+	return tam;
+}
+	
+	public void imprimirtopo() {
+		System.out.println(" O Valor que está no topo é: " + topo.getElemento());
+	
+	}
+	
+	public void imprimir() {
+		No aux = topo;
+		while(aux != null) {
+			System.out.println(" " + aux.getElemento());
+		aux = aux.anterior;
+		}
+	}
+	                   
+	/*public void remove(No topo) {
+		No pegarAntes = new No();
+		pegarAntes = topo.getAnterior();
+		topo.getElemento();
+		tam --;
+	}
+	*/
+	
+	/*
+	public void criarETrocarValores(PilhaEncadeada B) {
+		Object temp = topo.getElemento();
+		topo = topo.getAnterior();
+		temp = topo.getElemento();
+		
+		
+	}
+	*/
+
+
+
+
+}
