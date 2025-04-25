@@ -1,0 +1,13 @@
+#include <iostream>
+
+using namespace std; 
+
+struct prilha{
+int info;
+int *prox;
+}
+class sla{
+private:
+*nodo topo;
+
+public:
