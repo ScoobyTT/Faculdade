@@ -1,0 +1,204 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+struct Node {
+    string palavra;
+    Node* anterior;
+    Node* proximo;
+};
+
+class EditorTexto {
+private:
+    Node* inicio;
+    Node* fim;
+    Node* cursor;
+
+public:
+    EditorTexto() {
+        inicio = nullptr;
+        fim = nullptr;
+        cursor = nullptr;
+    }
+
+    void adicionarInicio(string novaPalavra);
+    void adicionarDepois(string novaPalavra);
+    void editarAtual(string novaPalavra);
+    void removerAtual();
+    string moverProximo();
+    string moverAnterior();
+    void mostrarTexto();
+};
+
+// Adiciona várias palavras no início
+void EditorTexto::adicionarInicio(string novaPalavra) {
+    Node* novo = new Node{novaPalavra, nullptr, nullptr};
+
+    if (!inicio) {
+        novo->proximo = novo;
+        novo->anterior = novo;
+        inicio = fim = cursor = novo;
+    } else {
+        novo->proximo = inicio;
+        novo->anterior = fim;
+        inicio->anterior = novo;
+        fim->proximo = novo;
+        inicio = novo;
+    }
+}
+
+// Adiciona após o cursor
+void EditorTexto::adicionarDepois(string novaPalavra) {
+    if (!inicio) {
+        adicionarInicio(novaPalavra);
+        return;
+    }
+
+    Node* novo = new Node{novaPalavra, cursor, cursor->proximo};
+    cursor->proximo->anterior = novo;
+    cursor->proximo = novo;
+
+    if (cursor == fim)
+        fim = novo;
+}
+
+// Edita a palavra atual
+void EditorTexto::editarAtual(string novaPalavra) {
+    if (!cursor) {
+        cout << "Lista vazia. Nada a editar.\n";
+        return;
+    }
+    cursor->palavra = novaPalavra;
+}
+
+// Remove a palavra atual
+void EditorTexto::removerAtual() {
+    if (!cursor) {
+        cout << "Lista vazia. Nada a remover.\n";
+        return;
+    }
+
+    Node* apagar = cursor;
+
+    if (inicio == fim) {
+        inicio = fim = cursor = nullptr;
+    } else {
+        apagar->anterior->proximo = apagar->proximo;
+        apagar->proximo->anterior = apagar->anterior;
+
+        if (apagar == inicio)
+            inicio = apagar->proximo;
+        if (apagar == fim)
+            fim = apagar->anterior;
+
+        cursor = apagar->anterior;
+    }
+
+    delete apagar;
+}
+
+// Move o cursor para frente
+string EditorTexto::moverProximo() {
+    if (!cursor) return "Lista vazia.";
+    cursor = cursor->proximo;
+    return cursor->palavra;
+}
+
+// Move o cursor para trás
+string EditorTexto::moverAnterior() {
+    if (!cursor) return "Lista vazia.";
+    cursor = cursor->anterior;
+    return cursor->palavra;
+}
+
+// Mostra todo o texto atual
+void EditorTexto::mostrarTexto() {
+    if (!inicio) {
+        cout << "(vazio)\n";
+        return;
+    }
+
+    Node* atual = inicio;
+    do {
+        cout << atual->palavra << " ";
+        atual = atual->proximo;
+    } while (atual != inicio);
+    cout << "\n";
+}
+
+// Função principal
+int main() {
+    EditorTexto editor;
+    char comando;
+    bool inicializado = false;
+
+    while (true) {
+        cout << "\n------ TEXTO ATUAL ------\n";
+        editor.mostrarTexto();
+        cout << "\nOpções:\n"
+             << "E - Editar palavra atual\n"
+             << "I - Inserir após palavra atual\n"
+             << "R - Remover palavra atual\n"
+             << "> - Avançar\n"
+             << "< - Voltar\n"
+             << "X - Sair\n"
+             << "Escolha: ";
+        cin >> comando;
+
+        if (comando == 'X' || comando == 'x') break;
+
+        switch (comando) {
+            case 'E': case 'e': {
+                string nova;
+                cout << "Nova palavra: ";
+                cin >> nova;
+                editor.editarAtual(nova);
+                break;
+            }
+
+            case 'I': case 'i': {
+                if (!inicializado) {
+                    int n;
+                    cout << "Quantas palavras deseja adicionar? ";
+                    cin >> n;
+                    cout << "Digite: ";
+                    for (int i = 0; i < n; ++i) {
+                        string palavra;
+                        cin >> palavra;
+                        editor.adicionarInicio(palavra);
+                    }
+                    inicializado = true;
+                } else {
+                    string palavra;
+                    cout << "Digite a nova palavra: ";
+                    cin >> palavra;
+                    editor.adicionarDepois(palavra);
+                }
+                break;
+            }
+
+            case 'R': case 'r': {
+                editor.removerAtual();
+                break;
+            }
+
+            case '>': {
+                string atual = editor.moverProximo();
+                cout << "Palavra atual: " << atual << "\n";
+                break;
+            }
+
+            case '<': {
+                string atual = editor.moverAnterior();
+                cout << "Palavra atual: " << atual << "\n";
+                break;
+            }
+
+            default:
+                cout << "Comando inválido.\n";
+        }
+    }
+
+    return 0;
+}
