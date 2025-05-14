@@ -1,0 +1,94 @@
+//contrua uma pilha encadeada que pegue o nome e peso dos anos, empilhe cada nome e peso e depois compare com uma determinada "capacidade" fornecida pelo usuário.
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+struct nodo {
+    string nome;
+    int info;
+    nodo *prox;
+};
+
+class pilhaD {
+private:
+    nodo *topo;
+public:
+    pilhaD();
+    void push(string nome, int info);
+    bool pull(string &nome, int &info);
+    void print();
+};
+
+pilhaD::pilhaD() {
+    topo = nullptr;
+}
+
+void pilhaD::push(string nome, int info) {
+    nodo *novo = new nodo;
+    novo->nome = nome;
+    novo->info = info;
+    novo->prox = topo;
+    topo = novo;
+}
+
+bool pilhaD::pull(string &nome, int &info) {
+    if (topo == nullptr) {
+        cout << "Pilha vazia\n";
+        return false;
+    }
+    nodo *aux = topo;
+    nome = topo->nome;
+    info = topo->info;
+    topo = topo->prox;
+    delete aux;
+    return true;
+}
+
+void pilhaD::print() {
+    nodo *atual = topo;
+    while (atual != nullptr) {
+        cout << atual->nome << " " << atual->info << endl;
+        atual = atual->prox;
+    }
+}
+
+struct anao {
+    string nome;
+    int peso;
+};
+
+int main() {
+    vector<anao> anoes;
+    anao aux;
+    int amigos;
+
+    cout << "Informe a quantidade de amigos do bilbo:\n";
+    cin >> amigos;
+
+    for(int i = 0; i < amigos; i++) {
+        cin >> aux.nome >> aux.peso;
+        anoes.push_back(aux);
+    }
+
+    int capacidade;
+    cout << "Informe a capacidade máxima:\n";
+    cin >> capacidade;
+
+    bool todosPassam = true;
+    for(int i = 0; i < amigos; i++) {
+        if(anoes[i].peso > capacidade) {
+            cout << "Vamos virar comida de aranha gigante\n";
+            todosPassam = false;
+            break;
+        }
+    }
+    if(todosPassam) {
+        cout << "Vamos subir a montanha\n";
+    }
+
+    cout << "Nome dos anões:\n";
+    for(int i = 0; i < anoes.size(); i++) {
+        cout << anoes[i].nome << "\n";
+    }
+}
