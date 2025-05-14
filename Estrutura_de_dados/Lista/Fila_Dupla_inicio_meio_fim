@@ -1,0 +1,71 @@
+//Fila duplamente encadeada que recebe apenas "int" como paramentro de entrada do usuário.
+//Possui funcionalidades que para inserir elementos no inicio, meio e fim da lista.
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int valor;
+    Node* prox;
+};
+
+class Lista {
+private:
+    Node* head;
+public:
+    Lista() : head(nullptr) {}
+
+    // Inserir no início
+    void inserirInicio(int v) {
+        Node* novo = new Node{v, head};
+        head = novo;
+    }
+
+    // Inserir no final
+    void inserirFim(int v) {
+        Node* novo = new Node{v, nullptr};
+        if (!head) {
+            head = novo;
+            return;
+        }
+        Node* atual = head;
+        while (atual->prox) {
+            atual = atual->prox;
+        }
+        atual->prox = novo;
+    }
+
+    // Inserir em uma posição específica (0 = início)
+    void inserirPosicao(int v, int pos) {
+        if (pos == 0) {
+            inserirInicio(v);
+            return;
+        }
+        Node* atual = head;
+        for (int i = 0; atual && i < pos - 1; i++) {
+            atual = atual->prox;
+        }
+        if (!atual) {
+            cout << "Posição inválida!\n";
+            return;
+        }
+        Node* novo = new Node{v, atual->prox};
+        atual->prox = novo;
+    }
+
+    void imprimir() {
+        Node* atual = head;
+        while (atual) {
+            cout << atual->valor << " ";
+            atual = atual->prox;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    Lista lista;
+    lista.inserirInicio(10); // 10
+    lista.inserirFim(20);    // 10 20
+    lista.inserirPosicao(15, 1); // 10 15 20
+    lista.imprimir();
+}
