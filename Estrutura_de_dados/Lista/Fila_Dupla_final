@@ -1,0 +1,58 @@
+//Fila duplamente encadeada que recebe "string" e "int" como parametro, mas só adiciona os elementos no final.
+#include <iostream>
+using namespace std;
+
+struct Node {
+    string nome;
+    int info;
+    Node* prev;
+    Node* next;
+};
+
+class ListaDupla {
+private:
+    Node* head;
+    Node* tail;
+public:
+    ListaDupla() : head(nullptr), tail(nullptr) {}
+
+    void inserirNoFim(string nome, int info) {
+        Node* novo = new Node{nome, info, nullptr, nullptr};
+        if (!head) {
+            head = tail = novo;
+        } else {
+            tail->next = novo;
+            novo->prev = tail;
+            tail = novo;
+        }
+    }
+
+    void imprimir() {
+        Node* atual = head;
+        while (atual) {
+            cout << atual->nome << " " << atual->info << endl;
+            atual = atual->next;
+        }
+    }
+
+    void imprimirReverso() {
+        Node* atual = tail;
+        while (atual) {
+            cout << atual->nome << " " << atual->info << endl;
+            atual = atual->prev;
+        }
+    }
+};
+
+int main() {
+    ListaDupla lista;
+    lista.inserirNoFim("Thorin", 120);
+    lista.inserirNoFim("Balin", 110);
+    lista.inserirNoFim("Dwalin", 115);
+
+    cout << "Lista em ordem:\n";
+    lista.imprimir();
+
+    cout << "Lista reversa:\n";
+    lista.imprimirReverso();
+}
