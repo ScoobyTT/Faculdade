@@ -1,4 +1,4 @@
-//Fila duplamente encadeada que recebe "string" e "int" como parametro, mas só adiciona os elementos no final.
+//Fila duplamente encadeada que recebe "string" e "int" como parametro de entrada do usuário, mas só adiciona os elementos no final.
 #include <iostream>
 using namespace std;
 
