@@ -1,7 +1,4 @@
-//contrua uma pilha encadeada que pegue o nome e peso dos anos, empilhe cada nome e peso e depois compare com uma determinada "capacidade" fornecida pelo usuário.
-
 #include <iostream>
-#include <vector>
 using namespace std;
 
 struct nodo {
@@ -53,42 +50,27 @@ void pilhaD::print() {
     }
 }
 
-struct anao {
+int main() {
+    pilhaD pilha;
+    int amigos;
     string nome;
     int peso;
-};
-
-int main() {
-    vector<anao> anoes;
-    anao aux;
-    int amigos;
 
     cout << "Informe a quantidade de amigos do bilbo:\n";
     cin >> amigos;
 
     for(int i = 0; i < amigos; i++) {
-        cin >> aux.nome >> aux.peso;
-        anoes.push_back(aux);
+        cout << "Nome e peso do anão:\n";
+        cin >> nome >> peso;
+        pilha.push(nome, peso);
     }
 
-    int capacidade;
-    cout << "Informe a capacidade máxima:\n";
-    cin >> capacidade;
+    cout << "Conteúdo da pilha (nome e peso):\n";
+    pilha.print();
 
-    bool todosPassam = true;
-    for(int i = 0; i < amigos; i++) {
-        if(anoes[i].peso > capacidade) {
-            cout << "Vamos virar comida de aranha gigante\n";
-            todosPassam = false;
-            break;
-        }
-    }
-    if(todosPassam) {
-        cout << "Vamos subir a montanha\n";
-    }
-
-    cout << "Nome dos anões:\n";
-    for(int i = 0; i < anoes.size(); i++) {
-        cout << anoes[i].nome << "\n";
+    // Exemplo de desempilhar todos os anões
+    cout << "Desempilhando:\n";
+    while (pilha.pull(nome, peso)) {
+        cout << nome << " saiu da pilha, peso: " << peso << endl;
     }
 }
