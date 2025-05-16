@@ -1,0 +1,111 @@
+// Lista duplamente encadeada: possui métodos de listagem e remoção completos
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Nodo {
+    string nome;
+    int info;
+    Nodo* prox;
+    Nodo* ant;
+};
+
+class ListaDupla {
+private:
+    Nodo* head;
+    Nodo* tail;
+
+public:
+    ListaDupla() : head(nullptr), tail(nullptr) {}
+
+    // Inserir no início
+    void insereInicio(string nome, int info) {
+        Nodo* novo = new Nodo{nome, info, head, nullptr};
+        if (head) head->ant = novo;
+        else tail = novo;
+        head = novo;
+    }
+
+    // Inserir no fim
+    void insereFim(string nome, int info) {
+        Nodo* novo = new Nodo{nome, info, nullptr, tail};
+        if (tail) tail->prox = novo;
+        else head = novo;
+        tail = novo;
+    }
+
+    // Inserir na posição (0-based)
+    void inserePosicao(string nome, int info, int pos) {
+        if (pos <= 0) {
+            insereInicio(nome, info);
+            return;
+        }
+        Nodo* atual = head;
+        for (int i = 0; i < pos - 1 && atual; ++i) {
+            atual = atual->prox;
+        }
+        if (!atual || !atual->prox) {
+            insereFim(nome, info);
+            return;
+        }
+        Nodo* novo = new Nodo{nome, info, atual->prox, atual};
+        atual->prox->ant = novo;
+        atual->prox = novo;
+    }
+
+    // Remover do início
+    void removeInicio() {
+        if (!head) return;
+        Nodo* temp = head;
+        head = head->prox;
+        if (head) head->ant = nullptr;
+        else tail = nullptr;
+        delete temp;
+    }
+
+    // Remover do fim
+    void removeFim() {
+        if (!tail) return;
+        Nodo* temp = tail;
+        tail = tail->ant;
+        if (tail) tail->prox = nullptr;
+        else head = nullptr;
+        delete temp;
+    }
+
+    // Remover de uma posição específica (0-based)
+    void removePosicao(int pos) {
+        if (pos < 0 || !head) return;
+        if (pos == 0) {
+            removeInicio();
+            return;
+        }
+        Nodo* atual = head;
+        for (int i = 0; i < pos && atual; ++i) {
+            atual = atual->prox;
+        }
+        if (!atual) return;
+        if (atual->ant) atual->ant->prox = atual->prox;
+        if (atual->prox) atual->prox->ant = atual->ant;
+        if (atual == tail) tail = atual->ant;
+        delete atual;
+    }
+
+    // Exibir a lista
+    void exibir() {
+        Nodo* atual = head;
+        cout << "[ ";
+        while (atual) {
+            cout << "(" << atual->nome << ", " << atual->info << ") ";
+            atual = atual->prox;
+        }
+        cout << "]\n";
+    }
+
+    // Destrutor para liberar memória
+    ~ListaDupla() {
+        while (head) {
+            removeInicio();
+        }
+    }
+};
