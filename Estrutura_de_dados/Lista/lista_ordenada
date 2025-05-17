@@ -1,0 +1,59 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Nodo {
+    string nome;
+    int info;
+    Nodo* prox;
+    Nodo* ant;
+};
+
+class ListaDupla {
+private:
+    Nodo* head;
+    Nodo* tail;
+
+public:
+    ListaDupla() : head(nullptr), tail(nullptr) {}
+
+    // Inserir no início
+    void insereInicio(string nome, int info) {
+        Nodo* novo = new Nodo{nome, info, head, nullptr};
+        if (head) head->ant = novo;
+        else tail = novo;
+        head = novo;
+    }
+
+    // Mostrar lista
+    void exibir() {
+        Nodo* atual = head;
+        while (atual) {
+            cout << "[" << atual->nome << ", " << atual->info << "] ";
+            atual = atual->prox;
+        }
+        cout << endl;
+    }
+
+    // Método de ordenação (Bubble Sort)
+    void ordenar() {
+        if (!head || !head->prox) return; // lista vazia ou com 1 elemento
+
+        bool trocou;
+        do {
+            trocou = false;
+            Nodo* atual = head;
+
+            while (atual && atual->prox) {
+                if (atual->info > atual->prox->info) {
+                    // Trocar os dados dos nós
+                    swap(atual->info, atual->prox->info);
+                    swap(atual->nome, atual->prox->nome);
+                    trocou = true;
+                }
+                atual = atual->prox;
+            }
+
+        } while (trocou);
+    }
+};
