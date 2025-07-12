@@ -1,0 +1,146 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <dirent.h>
+#include <algorithm>
+#include <csignal>
+#include <unistd.h>
+#include <iomanip>
+
+using namespace std;
+
+struct Processo {
+    int pid;
+    string executavel;
+    long memoria_kb;
+    double uso_cpu;
+};
+
+bool eh_pid(const string& valor) {
+    return !valor.empty() && all_of(valor.begin(), valor.end(), ::isdigit);
+}
+
+Processo ler_processo(const string& pid_str) {
+    Processo p = {0, "desconhecido", 0, 0.0};
+    p.pid = stoi(pid_str);
+
+    ifstream status("/proc/" + pid_str + "/status");
+    if (status.is_open()) {
+        string linha;
+        while (getline(status, linha)) {
+            if (linha.rfind("Name:", 0) == 0) {
+                p.executavel = linha.substr(6);
+            } else if (linha.rfind("VmRSS:", 0) == 0) {
+                p.memoria_kb = stol(linha.substr(7, linha.find("kB") - 7));
+            }
+        }
+        status.close();
+    }
+
+    ifstream stat_file("/proc/" + pid_str + "/stat");
+    ifstream uptime_file("/proc/uptime");
+
+    if (stat_file.is_open() && uptime_file.is_open()) {
+        long utime, stime, cutime, cstime, starttime;
+        double uptime;
+
+        string ignore;
+        stat_file >> ignore >> ignore >> ignore >> ignore >> ignore >> ignore >> ignore >> ignore >> ignore >> ignore;
+        stat_file >> utime >> stime >> cutime >> cstime >> ignore >> ignore >> ignore >> ignore >> starttime;
+
+        uptime_file >> uptime;
+
+        long total_time = utime + stime + cutime + cstime;
+        long clock_ticks = sysconf(_SC_CLK_TCK);
+        double seconds = uptime - (starttime / (double)clock_ticks);
+        if (seconds > 0)
+            p.uso_cpu = 100.0 * ((total_time / (double)clock_ticks) / seconds);
+
+        stat_file.close();
+        uptime_file.close();
+    }
+
+    return p;
+}
+
+void encerrar() {
+    int pid_alvo;
+    cout << "\nInforme o numero PID do processo que deseja finalizar: ";
+    cin >> pid_alvo;
+
+    if (kill(pid_alvo, SIGTERM) == 0) {
+        cout << "Processo encerrado com sucesso!\n";
+    } else {
+        perror("Erro ao tentar encerrar");
+        cerr << "Certifique-se do PID e das permissoes.\n";
+    }
+
+    usleep(2000000);
+}
+
+void visualizar() {
+    DIR* proc = opendir("/proc");
+    if (!proc) {
+        cerr << "Erro ao acessar /proc.\n";
+        return;
+    }
+
+    vector<Processo> processos;
+    dirent* entrada;
+
+    while ((entrada = readdir(proc)) != nullptr) {
+        if (entrada->d_type == DT_DIR) {
+            string nome = entrada->d_name;
+            if (eh_pid(nome)) {
+                processos.push_back(ler_processo(nome));
+            }
+        }
+    }
+
+    closedir(proc);
+
+    sort(processos.begin(), processos.end(), [](const Processo& a, const Processo& b) {
+        return a.memoria_kb > b.memoria_kb;
+    });
+
+    system("clear");
+
+    cout << "\n======== MONITOR DE PROCESSOS ========\n\n";
+    for (const auto& p : processos) {
+        double memoria_mb = p.memoria_kb / 1024.0;
+        cout << "Memoria: " << fixed << memoria_mb << " MB\n";
+        cout << "\tNome: " << p.executavel << "\n";
+        cout << "\tPID: " << p.pid << "\n";
+        cout << "\tCPU: " << fixed << setprecision(1) << p.uso_cpu << "%\n";
+        cout << "---------------------------------------------\n";
+    }
+}
+
+int main() {
+    char opcao;
+
+    while (true) {
+        visualizar();
+        cout << "\n[1] Atualizar\n[2] Finalizar processo\n[3] Sair\n";
+        cout << "Escolha uma opcao: ";
+        cin >> opcao;
+
+        switch (opcao) {
+            case '1':
+                continue;
+            case '2':
+                encerrar();
+                break;
+            case '3':
+                cout << "Finalizando...\n";
+                return 0;
+            default:
+                cout << "Opcao invalida. Tente novamente.\n";
+                usleep(1000000);
+                break;
+        }
+    }
+
+    return 0;
+}
