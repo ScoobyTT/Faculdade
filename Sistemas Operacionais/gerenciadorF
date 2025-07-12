@@ -1,0 +1,188 @@
+/*
+ * Monitor de Processos em C++ para Linux
+ * Lista PID, Nome, Memória (VmRSS), Uso de CPU (%), e permite encerrar processos
+ */
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
+#include <dirent.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <chrono>
+#include <thread>
+#include <iomanip>
+
+using namespace std;
+
+// Estrutura para guardar informações de um processo
+struct Processo {
+    int pid;
+    string nome;
+    double cpu;
+    double memoria;
+};
+
+// Função para verificar se uma string é um número
+bool ehNumero(const string& str) {
+    for (char c : str) {
+        if (!isdigit(c)) return false;
+    }
+    return true;
+}
+
+// Lê o tempo total da CPU do sistema
+long long lerTempoTotalCPU() {
+    ifstream arquivo("/proc/stat");
+    string linha;
+    getline(arquivo, linha);
+    istringstream iss(linha);
+    string cpu;
+    long long total = 0, tempo;
+    iss >> cpu; // "cpu"
+    while (iss >> tempo) {
+        total += tempo;
+    }
+    return total;
+}
+
+// Lê o tempo de CPU de um processo
+long long lerTempoCPUProcesso(int pid) {
+    string caminho = "/proc/" + to_string(pid) + "/stat";
+    ifstream arquivo(caminho);
+    if (!arquivo.is_open()) return 0;
+    string linha;
+    getline(arquivo, linha);
+    istringstream iss(linha);
+    string ignorar;
+    long long utime, stime;
+    for (int i = 0; i < 13; i++) iss >> ignorar; // pular 13 campos
+    iss >> utime >> stime;
+    return utime + stime;
+}
+
+// Lê a memória usada pelo processo (VmRSS em kB)
+double lerMemoriaProcesso(int pid) {
+    string caminho = "/proc/" + to_string(pid) + "/status";
+    ifstream arquivo(caminho);
+    string linha;
+    while (getline(arquivo, linha)) {
+        if (linha.find("VmRSS:") == 0) {
+            istringstream iss(linha);
+            string chave;
+            double valor;
+            string unidade;
+            iss >> chave >> valor >> unidade;
+            return valor / 1024.0; // converter para MB
+        }
+    }
+    return 0;
+}
+
+// Lê o nome do processo
+string lerNomeProcesso(int pid) {
+    string caminho = "/proc/" + to_string(pid) + "/comm";
+    ifstream arquivo(caminho);
+    string nome;
+    getline(arquivo, nome);
+    return nome;
+}
+
+// Coleta dados de processos com uso real de CPU
+vector<Processo> coletarProcessos() {
+    vector<Processo> processos;
+    DIR* dir = opendir("/proc");
+    struct dirent* entrada;
+
+    vector<int> pids;
+    while ((entrada = readdir(dir)) != nullptr) {
+        if (ehNumero(entrada->d_name)) {
+            pids.push_back(stoi(entrada->d_name));
+        }
+    }
+    closedir(dir);
+
+    // Captura uso de CPU antes do intervalo
+    long long tempoTotalAntes = lerTempoTotalCPU();
+    vector<long long> temposAntes(pids.size());
+    for (size_t i = 0; i < pids.size(); ++i) {
+        temposAntes[i] = lerTempoCPUProcesso(pids[i]);
+    }
+
+    this_thread::sleep_for(chrono::milliseconds(1000));
+
+    // Captura uso de CPU depois do intervalo
+    long long tempoTotalDepois = lerTempoTotalCPU();
+    for (size_t i = 0; i < pids.size(); ++i) {
+        int pid = pids[i];
+        long long tempoDepois = lerTempoCPUProcesso(pid);
+        double usoCPU = 0.0;
+        if (tempoTotalDepois != tempoTotalAntes) {
+            usoCPU = 100.0 * (tempoDepois - temposAntes[i]) / (tempoTotalDepois - tempoTotalAntes);
+        }
+
+        Processo p;
+        p.pid = pid;
+        p.nome = lerNomeProcesso(pid);
+        p.cpu = usoCPU;
+        p.memoria = lerMemoriaProcesso(pid);
+        processos.push_back(p);
+    }
+    return processos;
+}
+
+void listarProcessos() {
+    auto processos = coletarProcessos();
+
+    cout << "\n====================== Lista de Processos ======================\n";
+    for (const auto& proc : processos) {
+        cout << "PID: " << proc.pid << "\n";
+        cout << "Nome: " << proc.nome << "\n";
+        cout << fixed << setprecision(2);
+        cout << "Uso de Memória: " << proc.memoria << " MB\n";
+        cout << "Uso de CPU: " << proc.cpu << "%\n";
+        cout << "--------------------------------------------------------------\n";
+    }
+}
+
+void encerrarProcesso() {
+    int pid;
+    cout << "Digite o PID do processo que deseja encerrar: ";
+    cin >> pid;
+    if (kill(pid, SIGTERM) == 0) {
+        cout << "\nProcesso " << pid << " encerrado com sucesso!\n";
+    } else {
+        perror("Erro ao encerrar o processo");
+    }
+}
+
+int main() {
+    int opcao;
+    do {
+        cout << "\n========== Monitor de Processos ==========" << endl;
+        cout << "1. Listar processos" << endl;
+        cout << "2. Encerrar processo" << endl;
+        cout << "0. Sair" << endl;
+        cout << "Escolha uma opção: ";
+        cin >> opcao;
+
+        switch (opcao) {
+            case 1:
+                listarProcessos();
+                break;
+            case 2:
+                encerrarProcesso();
+                break;
+            case 0:
+                cout << "Encerrando...\n";
+                break;
+            default:
+                cout << "Opção inválida. Tente novamente.\n";
+        }
+    } while (opcao != 0);
+
+    return 0;
+}
