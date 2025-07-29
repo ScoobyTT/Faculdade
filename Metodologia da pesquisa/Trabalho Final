@@ -1,0 +1,470 @@
+\documentclass[
+    font=plain,
+    a4paper,
+    12pt,
+    english,
+    brazil]{abnt}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc} % Adicionado para melhor codificação de fontes
+\usepackage[brazil]{babel}
+\usepackage{abntex2cite}
+\usepackage{graphicx}
+\usepackage{paralist}
+\usepackage{subfloat} % Pode ser substituído por subcaption para mais modernidade, mas mantive o que você usou
+\usepackage{subfig}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{indentfirst} % Para indentar o primeiro parágrafo de cada seção
+\usepackage{amsmath, amsfonts, amssymb} % Para equações e símbolos matemáticos, se necessário
+\usepackage{hyperref} % Para links clicáveis no sumário e referências
+
+
+\graphicspath{{imagens/}} % Certifique-se de que sua pasta 'imagens' está no Overleaf
+
+\instituicao{UNEB - Universidade do Estado da Bahia 
+             \par Departamento de Ciências Exatas e da Terra}
+\titulo{A Bioinformática na Predição de Pandemias: O Caso da Dengue}
+\autor{Christian Amós Lessa Assis} % Mantenha seu nome completo e real
+\orientador{Maria Cristina Elyote}
+\comentario{\textbf{Áreas da Computação:} Bioinformática, Análise de Dados, Saúde Pública} % Mais profissional
+\local{Salvador-BA}
+%esta data deve ficar estática após entrega final
+\data{\today} % Mantenha \today para a data atual, ou troque para uma data fixa se for o caso
+
+\begin{document}
+\capa
+\folhaderosto
+
+%\begin{resumo}
+% O resumo será escrito depois de todo o trabalho concluído, e deve ter entre 150 e 500 palavras.
+% Aqui você apresentará os objetivos, a metodologia, os resultados principais e as conclusões do seu trabalho.
+%\end{resumo}
+
+\sumario
+
+\chapter{Introdução}
+Ao longo da história, a humanidade enfrentou inúmeros desafios à sua sobrevivência, destacando-se as recorrentes epidemias e pandemias de doenças infecciosas. Desde a devastação causada pela Gripe Espanhola, Varíola e Peste Bubônica, até as crises sanitárias mais recentes como AIDS, Dengue e COVID-19, a urgência em desenvolver mecanismos de resistência, documentação e cura tem sido uma constante. Diante da complexidade e escala desses eventos, a demanda por ferramentas que ofereçam suporte científico rápido e eficiente tornou-se extremamente necessário. Neste contexto, a Bioinformática surge como uma disciplina fundamental. Essencialmente interdisciplinar, ela une a biologia à ciência da computaçao, matemática e estatística, com o propósito de desenvolver e aplicar métodos para coletar, armazenar, analisar e interpretar a crescente avalanche de dados biológicos. Tais aspectos são cruciais nos dias atuais, especialmente porque a vasta geração de dados pelas \textbf{ciências ômicas} faz com que a Bioinformática se estabeleça como uma disciplina indispensável para a análise e interpretação dessas informações, conforme argumentado por Alves(2023), abrindo caminho para abordagens mais preditivas na saúde pública.
+
+Ainda que a Bioinformática seja uma poderosa ferramenta para a análise de dados em saúde, a predição e o controle de doenças infecciosas, como as transmitidas por vetores — a exemplo do \textit{Aedes aegypti} (principal vetor da dengue) e do \textit{Culicoides paraensis}, popularmente conhecido como 'muruim' —, apresentam complexidades inerentes. A dengue, em particular, representa um desafio persistente à saúde pública global, agravado por fatores como mudanças climáticas, contextos sociais e aspectos biológicos do vírus. Nesse cenário complexo, a \textbf{análise aprofundada dos genomas virais} é crucial para desvendar a dinâmica dessas infecções. Estudos sobre a evolução, a adaptação e os padrões de infecção de vírus, por meio da análise genômica, são indispensáveis para a compreensão da disseminação de doenças e a identificação de novas variantes. Conforme elucidado por Fonseca(2013), a investigação da correlação entre a frequência de códons em genomas virais e a abundância de espécies de RNA transportador na célula hospedeira humana pode revelar estratégias de adaptação viral, fornecendo \textit{insights} valiosos para a vigilância epidemiológica e a modelagem preditiva. Focando no aspecto da predição, a Bioinformática oferece diversos modelos, sendo notáveis a predição de estruturas moleculares de proteínas e a predição de surtos de doenças infecciosas. A predição de proteínas é uma ferramenta essencial para compreender seus padrões moleculares, auxiliando a indústria farmacêutica no entendimento do comportamento proteico e em seu potencial uso para desenvolver fármacos, o que é particularmente relevante para doenças sem cura estabelecida como a dengue, que é tratada sintomaticamente para promover a melhora do paciente. Assim, a predição de proteínas torna-se uma ferramenta indispensável na busca por soluções terapêuticas.
+
+Por outro lado, a predição de doenças infecciosas se mostra igualmente crucial no combate a essas enfermidades. Por demandar o uso de vastos dados biológicos e históricos, essa ferramenta não apenas incentiva a documentação contínua de informações epidemiológicas, mas também, e principalmente, possibilita a antecipação de surtos. Essa capacidade preditiva capacita a sociedade a se preparar, desenvolver estratégias de intervenção de maneira antecipada e, consequentemente, amenizar o impacto, a morbidade e a mortalidade associadas a pandemias e epidemias. É nesse contexto de lacuna e potencial que o presente projeto de pesquisa se insere, buscando explorar a aplicação de técnicas bioinformáticas e de análise de dados para aprimorar a capacidade de antecipação de eventos epidemiológicos e otimizar as estratégias de combate a pandemias. Para tal, este trabalho propõe o desenvolvimento de um modelo preditivo de surtos de dengue, com base na análise de dados históricos de contágios provenientes de um \textbf{dashboard atualmente em desenvolvimento}. Essa iniciativa visa não apenas sistematizar e visualizar informações cruciais sobre a dispersão da doença na região brasileira no ano de 2024, mas também servir como uma plataforma robusta para a investigação de padrões e a construção de algoritmos preditivos.
+
+O desenvolvimento de tal plataforma e do modelo preditivo, no entanto, não está isento de desafios. Uma das primeiras dificuldades encontradas reside no \textbf{tratamento e na padronização de dados}, frequentemente oriundos de fontes diversas (como IBGE, PubMed, Secretarias de Saúde e dados climáticos), que exigem um esforço considerável de integração. A \textbf{escassez de informações relevantes}, como idade, região específica do contágio ou sexo dos indivíduos, representa uma limitação, assim como a garantia da \textbf{qualidade e veracidade dos dados} coletados. Dentre esses desafios, alguns se mostraram particularmente complexos. A \textbf{criação da lógica algorítmica} para o tratamento de dados (visando a otimização de performance e a não-interferência em outras áreas de análise) e a \textbf{busca por funções e bibliotecas adequadas} e ativas foram pontos críticos. A constante desativação ou obsolescência de bibliotecas na linguagem R por questões de segurança, por exemplo, exigiu em diversos momentos a reavaliação e até a reestruturação de partes significativas do projeto. Em paralelo a isso, conflitos entre o compilador e o sistema operacional da máquina demandaram pausas na pesquisa para a busca de soluções adequadas. Uma dificuldade operacional adicional, e considerável, é a necessidade de baixar, tratar e implementar os arquivos de dados no código semanalmente, em função do caráter de uma aplicação em tempo real do sistema proposto.
+
+Apesar dos desafios inerentes ao desenvolvimento de sistemas preditivos em saúde, a relevância de tal empreendimento é inquestionável e justifica os esforços. Nesse cenário, o presente projeto de pesquisa tem como \textbf{objetivo geral} a construir, mesmo que a longo prazo, uma aplicação de análise de dados que tenha como finalidade a predição de possíveis pandemias futuras ou que, no caso de pandemias já estarem ocorrendo, seja capaz de analisar os vírus, bactérias ou qualquer que seja o organismo da ameaça e, a partir dessa análise, conseguir traçar um padrão de comportamento das ameaças. Com base nesse padrão, busca-se estabelecer métodos confiáveis e eficazes para o combate dessas possíveis doenças. A aplicação também precisa ser capaz de analisar dados robustos e atualizar o banco de dados de maneira automática e em tempo real, para auxiliar os pesquisadores e medicos envolvidos em qualquer que seja a demanda.
+
+Além desta introdução, o presente trabalho será estruturado em cinco seções. A \textbf{Seção 2} (ou Capítulo 2) abordará a \textbf{revisão da literatura} sobre as aplicações da Bioinformática na saúde, focando na epidemiologia computacional, análise de genomas virais e modelos preditivos de doenças infecciosas. A \textbf{Seção 3} (ou Capítulo 3) detalhará a \textbf{metodologia} empregada no desenvolvimento do dashboard e do modelo preditivo para a dengue, incluindo a coleta, tratamento dos dados e os algoritmos aplicados. A \textbf{Seção 4} (ou Capítulo 4) apresentará e discutirá os \textbf{resultados} obtidos com o modelo proposto. Finalmente, a \textbf{Seção 5} (ou Capítulo 5) trará as \textbf{conclusões} do estudo e as \textbf{perspectivas para futuros trabalhos} no campo da predição epidemiológica da dengue.
+
+\chapter{Objetivos}
+
+\textbf{Objetivo Geral:}
+
+Este projeto de pesquisa tem como objetivo principal estabelecer um dashboard de
+prático e de fácil manuseio para a predição de surtos de doenças infecciosas,
+utilizando a dengue como estudo de caso central para o desenvolvimento e validação
+de um protótipo de sistema de bioinformática. A aplicação visa aprimorar a vigilância
+epidemiológica e subsidiar a tomada de decisões proativas em saúde pública.
+
+\textbf{Objetivos Específicos:}
+
+• Realizar uma revisão sistemática da literatura sobre a aplicação de métodos
+de bioinformática e aprendizado de máquina na predição de doenças
+infecciosas e surtos epidemiológicos, identificando as principais abordagens,
+ferramentas e lacunas de pesquisa.
+
+• Coletar, integrar e pré-processar dados de fontes oficiais relevantes para a
+dinâmica de transmissão da doença, garantindo sua qualidade, consistência e
+padronização para uso em modelos preditivos.
+
+• Desenvolver e implementar um modelo preditivo de surtos de dengue,
+embora nao seja o foco, pretendemos explorar e comparar o desempenho de
+diferentes algoritmos de Machine Learning otimizando-o para acurácia e
+capacidade de generalização.
+
+• Construir um dashboard interativo utilizando tecnologias de visualização de
+dados (e.g., R Shiny) capaz de apresentar de forma intuitiva os dados
+epidemiológicos históricos, as variáveis contextuais e as previsões geradas pelo
+modelo, facilitando a interpretação por profissionais de saúde e pesquisadores.
+
+• Propor um mecanismo para a atualização automática e contínua esse seria
+um objetivo mais a longo prazo e não é um foco, do banco de dados do sistema,
+garantindo a "real-timeness" das informações e a relevância das análises
+preditivas para a vigilância epidemiológica contínua.
+
+• Validar rigorosamente o modelo preditivo e o dashboard por meio de
+métricas de desempenho estatísticas e testes de usabilidade, avaliando sua
+eficácia na antecipação de eventos epidemiológicos e sua aplicabilidade
+prática em cenários de saúde pública.
+
+\chapter{Justificativas e Contribuições}
+A relevância deste trabalho reside na urgência premente de se desenvolverem e implementarem estratégias mais eficazes para a vigilância e controle de doenças infecciosas, como a dengue. A persistência e a complexidade dos surtos epidêmicos, com seus impactos significativos na saúde pública global e a sobrecarga de sistemas sanitários, evidenciam uma lacuna crítica na capacidade de predição e resposta proativa. Este projeto é intrinsecamente motivado pela necessidade de transitar de uma abordagem reativa para uma preditiva, otimizando a gestão de crises epidemiológicas.
+
+Do ponto de vista da relevância social, a contribuição deste estudo é substancial. Ao viabilizar o desenvolvimento de um modelo preditivo robusto e uma plataforma de visualização de dados em tempo real (o dashboard), o projeto visa a fornecer subsídios técnico-científicos a gestores de saúde e equipes clínicas. Tal capacidade preditiva pode otimizar a alocação de recursos, possibilitar a execução de campanhas de intervenção direcionadas e preparar infraestruturas de atendimento de forma antecipada, mitigando a morbidade, a mortalidade e os impactos socioeconômicos associados a surtos e pandemias. Em última instância, o foco é a proteção e o bem-estar da população, através de uma vigilância epidemiológica mais informada e ágil.
+
+No âmbito acadêmico-científico, este projeto se destaca pela sua abordagem interdisciplinar e inovadora. Ele busca integrar conjuntos de dados heterogêneos e de grande volume — epidemiológicos, climáticos e socioeconômicos —, o que representa um desafio computacional e analítico significativo. A aplicação de algoritmos de Machine Learning para a modelagem preditiva de surtos em tempo real, aliada à superação das complexidades inerentes ao tratamento de dados e à utilização de ferramentas como a linguagem R em um contexto de alta demanda, constitui uma contribuição metodológica valiosa. Este trabalho não apenas preenche lacunas no conhecimento ao propor uma solução para a predição da dengue, mas também estabelece as bases para um arcabouço analítico generalizável a outras ameaças patogênicas, adicionando um componente de contribuição cumulativa à área da Bioinformática aplicada à saúde.
+
+
+
+\chapter{Metodologia}
+
+Esta seção detalha a abordagem metodológica que será empregada para alcançar os
+objetivos propostos neste trabalho, desde a revisão sistemática da literatura até a
+coleta e o tratamento dos dados, o desenvolvimento e a validação do modelo preditivo
+e do dashboard interativo. A metodologia foi concebida para enfrentar os desafios de
+integração e qualidade de dados, bem como a necessidade de atualização em tempo
+real, conforme discutido na introdução.
+
+\textbf{2.1. Tipo de Pesquisa}
+
+O presente trabalho configura-se como uma pesquisa de caráter aplicado, uma vez
+que busca desenvolver uma solução prática (o modelo preditivo e o dashboard) para
+um problema real na área da saúde pública, especificamente a predição de surtos de
+doenças infecciosas. Quanto à sua abordagem, é predominantemente quantitativa,
+dada a ênfase na análise de grandes volumes de dados numéricos para identificar
+padrões e fazer predições. Em termos de objetivos, classifica-se como exploratória e
+descritiva, pois inicialmente busca coletar e integrar o máximo de dados sobre casos
+confirmados de dengue, correlacionando-os com seus respectivos estados e dessa
+maneira viabilizar estudos e comparações mais direcionadas, visando a obtenção de
+informações mais situacionais. Posteriormente, visa descrever o comportamento e a
+dinâmica desses contágios para cada estado, utilizando os padrões identificados a
+partir da compreensão adquirida de cada estado em específico.
+
+\textbf{2.2. Revisão Sistemática da Literatura}
+
+Para embasar teoricamente o desenvolvimento do modelo preditivo e do dashboard,
+bem como identificar o estado da arte e lacunas de pesquisa na aplicação da
+bioinformática e do aprendizado de máquina na predição de doenças infecciosas, será
+conduzida uma revisão sistemática da literatura.
+
+\textbf{2.2.1. Questões de Pesquisa}
+
+Esta revisão sistemática buscará responder às seguintes perguntas:
+
+• Quais são as principais abordagens e algoritmos de bioinformática e Machine
+Learning empregados na predição de surtos de doenças infecciosas,
+especificamente dengue?
+
+• Quais tipos de dados (epidemiológicos, climáticos, socioeconômicos,
+genômicos) são mais frequentemente utilizados e quais mostram maior
+relevância para a predição de doenças transmitidas por vetores?
+
+• Quais as ferramentas e tecnologias mais comuns e eficazes para o
+desenvolvimento de sistemas preditivos e dashboards interativos na área da
+saúde pública?
+
+• Quais são os principais desafios metodológicos e operacionais na integração e
+pré-processamento de dados heterogêneos para a predição epidemiológica?
+
+\textbf{2.2.2. String de Busca}
+
+A estratégia de busca será elaborada a partir da combinação de termos-chave e
+operadores booleanos (AND, OR) para maximizar a relevância e abrangência dos
+resultados. A string de busca preliminar incluirá, mas não se limitará a:
+("bioinformatics" OR "bioinformática") AND ("machine learning" OR
+"aprendizado de máquina" OR "artificial intelligence" OR
+"inteligência artificial") AND ("disease prediction" OR "epidemic
+prediction" OR "outbreak prediction" OR "dengue prediction") AND
+("time series" OR "séries temporais")
+Termos adicionais relacionados a dados climáticos, genômicos ou sociais poderão ser
+incorporados conforme a especificidade da busca em cada base de dados.
+
+\textbf{2.2.3. Critérios de Inclusão e Exclusão}
+
+Os estudos serão avaliados com base nos seguintes critérios:
+
+\textbf{• Inclusão:} Artigos científicos completos, dissertações e teses publicados em
+periódicos ou anais de conferências relevantes, nos idiomas português e inglês,
+com foco na aplicação de bioinformática e/ou Machine Learning para a predição
+de doenças infecciosas.
+
+\textbf{• Exclusão:} Trabalhos não relacionados diretamente à predição, artigos
+duplicados, trabalhos postados com mais de dez anos, teses ou artigos com
+bases de pesquisas duvidosas, trabalhos com avaliações baixas ou em
+plataformas não muito aceitas pela comunidade.
+2.2.4. Bases de Dados
+As seguintes bases de dados científicas serão consultadas para a identificação dos
+estudos relevantes:
+
+• PubMed
+
+• IBGE
+
+• SINAN
+
+
+\textbf{2.3. Coleta e Fontes de Dados}
+
+A fase de coleta de dados será crucial e contínua, dada a natureza dinâmica da
+aplicação proposta e a necessidade de monitoramento em tempo real. Serão utilizadas
+diversas fontes para compor o banco de dados robusto necessário à modelagem
+preditiva, abrangendo:
+
+\textbf{• Dados Epidemiológicos:} Informações detalhadas sobre o número de casos de
+dengue (e, futuramente, outras doenças infecciosas), incluindo sua localização
+geográfica (estado, município), faixa etária, sexo e data de notificação. As
+principais fontes para esses dados incluirão sistemas de informação oficiais do
+Ministério da Saúde (e.g., SINAN, SIVEP-Gripe), Secretarias de Saúde estaduais
+e municipais, e repositórios de dados abertos governamentais, como o
+disponibilizado via o "dashboard em desenvolvimento" mencionado na
+introdução, que sistematiza dados do governo brasileiro.
+
+\textbf{• Dados Climáticos:} Variáveis ambientais críticas para a proliferação do vetor e a
+transmissão da doença, como temperatura (média, mínima, máxima), umidade
+relativa do ar, precipitação e velocidade do vento. Esses dados serão obtidos de
+órgãos como o Instituto Nacional de Meteorologia (INMET) ou por meio de APIs
+de serviços meteorológicos confiáveis.
+
+\textbf{• Dados Socioeconômicos e Demográficos:} Informações contextuais como
+densidade populacional, condições de saneamento básico, renda per capita e
+indicadores de urbanização, obtidas de instituições como o Instituto Brasileiro
+de Geografia e Estatística (IBGE), que auxiliam na compreensão da
+vulnerabilidade das populações, raça(cor), sexo e idade.
+
+\textbf{• Dados Genômicos Virais (exploração futura):} Embora não seja o foco inicial
+da predição de surtos, a incorporação futura de análises da frequência de
+códons em genomas virais (conforme o estudo de Fonseca, 2013) poderá
+fornecer insights adicionais sobre estratégias de adaptação viral e virulência,
+sendo obtidos de bancos de dados públicos como GenBank ou GISAID
+(mediante acesso e permissão).
+
+\textbf{• A atualização semanal dos dados:} será uma prioridade, demandando a implementação
+de rotinas de web scraping e processamento automatizado para garantir a "real-
+timeness" da aplicação e mitigar a intervenção manual, que é um desafio operacional.
+
+\textbf{2.4. Tratamento de Dados}
+
+Esta etapa é fundamental para a qualidade e confiabilidade do modelo preditivo,
+especialmente devido à heterogeneidade, incompletude e potencial ruído das fontes
+de dados. As ações a serem executadas incluem:
+
+\textbf{• Limpeza de Dados:} Identificação e tratamento de valores ausentes,
+inconsistências (e.g., datas inválidas, valores fora de faixas esperadas,
+duplicações) e outliers. Técnicas como imputação de dados (média, mediana,
+regressão) ou exclusão de registros incompletos/inválidos serão aplicadas
+criteriosamente, considerando o impacto na representatividade do conjunto de
+dados.
+
+\textbf{• Engenharia de Features:} Criação de novas variáveis preditivas a partir dos
+dados existentes que possam capturar relações e tendências mais complexas
+(e.g., indicadores de variação climática acumulada, médias móveis de casos,
+índices de sazonalidade, lags temporais de variáveis epidemiológicas e
+climáticas).
+
+\textbf{• Integração de Dados:} A complexidade da integração de dados de diversas
+fontes (epidemiológicas por local/data, climáticas por estação,
+socioeconômicas por município) será abordada através de chaves de ligação
+consistentes (principalmente data e localização geográfica), com foco na
+criação de um dataset unificado.
+
+\textbf{• Tratamento de Dados Categóricos:} Codificação de variáveis qualitativas para
+formatos numéricos que possam ser processados pelos algoritmos de machine
+lorgin.
+
+\textbf{2.5. Desenvolvimento do Modelo Preditivo}
+
+O coração deste projeto é o desenvolvimento de um modelo preditivo robusto, capaz
+de antecipar a ocorrência e a magnitude de surtos de dengue. A seleção do algoritmo
+será resultado de uma fase exploratória e comparativa:
+
+\textbf{• Exploração de Algoritmos:} Serão explorados e comparados diferentes
+algoritmos de Machine Learning, adaptados para problemas de séries temporais
+e dados tabulares, incluindo:
+
+\textbf{• Modelos de Séries Temporais Clássicos:} Como ARIMA (AutoRegressive
+Integrated Moving Average) e SARIMA (Seasonal ARIMA), para modelar a
+dependência temporal e sazonalidade dos casos.
+
+\textbf{• Modelos Baseados em Árvores:} Como Random Forest, Gradient
+Boosting Machines (GBM), e suas variantes otimizadas (e.g., XGBoost,
+LightGBM), conhecidos por sua robustez e capacidade de lidar com
+relações não-lineares e interações entre variáveis.
+o Redes Neurais Artificiais (RNAs): Particularmente Redes Neurais
+Recorrentes (RNNs) como LSTMs (Long Short-Term Memory), que são
+eficazes para sequências temporais longas e complexas, capazes de
+aprender dependências de longo prazo.
+
+\textbf{• Treinamento e Otimização:} Os modelos serão treinados em conjuntos de
+dados históricos, com otimização de hiperparâmetros realizada por meio de
+técnicas como grid search ou random search e validação cruzada.
+
+\textbf{• Seleção do Modelo Ideal:} A escolha do modelo final será baseada não apenas
+em métricas de desempenho rigorosas, mas também na interpretabilidade do
+modelo para os especialistas da saúde e na sua capacidade de
+operacionalização em tempo real.
+
+\textbf{2.6. Desenvolvimento do Dashboard Interativo}
+
+O dashboard será a interface central do sistema, projetado para democratizar o acesso
+às informações e às previsões do modelo, tornando-as compreensíveis e acionáveis.
+
+ \textbf{Tecnologia Base:} O ambiente de programação R, em conjunto com a biblioteca
+Shiny, será a principal ferramenta para o desenvolvimento do dashboard,
+permitindo a criação de aplicações web interativas e dinâmicas. Esta escolha
+mitiga desafios de integração de dados e modelos desenvolvidos em R.
+
+ \textbf{Funcionalidades Chave:} O dashboard incluirá:
+ Gráficos de série temporal da incidência de dengue (casos confirmados,
+prováveis confirmações).
+ Mapas georreferenciados para visualizar a distribuição espacial dos
+casos e das previsões.
+ Visualizações interativas das relações entre variáveis
+climáticas/socioeconômicas e a dinâmica da doença.
+ Apresentação clara das previsões do modelo, incluindo intervalos de
+confiança e cenários.
+ Filtros e opções de segmentação para explorar dados por período, região
+e outras características relevantes.
+
+ \textbf{Usabilidade e Design:} O design da interface será focado na intuitividade e na
+experiência do usuário, garantindo que profissionais de saúde e pesquisadores,
+mesmo sem profundo conhecimento técnico em Bioinformática, possam extrair
+insights valiosos.
+
+ \textbf{Conexão em Tempo Real:} A arquitetura do dashboard será planejada para se
+conectar diretamente com o banco de dados atualizado e o modelo preditivo,
+permitindo que as informações e previsões sejam exibidas com a frequência de
+atualização dos dados.
+
+\textbf{2.7. Validação e Avaliação do Modelo}
+
+A rigorosa validação do modelo preditivo é essencial para assegurar sua confiabilidade
+e capacidade de generalização para dados não vistos.
+ \textbf{Estratégia de Divisão de Dados:} O conjunto de dados será metodicamente
+dividido em conjuntos de treinamento, validação e teste. O conjunto de teste
+será mantido estritamente isolado e utilizado apenas para a avaliação final da
+performance do modelo, simulando a aplicação em um ambiente real.
+
+ \textbf{Métricas de Desempenho:} A performance dos modelos será quantificada e
+comparada utilizando métricas estatísticas robustas, adequadas para
+problemas de previsão:
+
+o Erro Médio Absoluto (MAE - Mean Absolute Error): Mede a média dos
+erros absolutos entre as previsões e os valores reais.
+o Raiz do Erro Quadrático Médio (RMSE - Root Mean Squared Error):
+Penaliza erros maiores, sendo sensível a outliers.
+o Coeficiente de Determinação (R²): Indica a proporção da variância na
+variável dependente que é previsível a partir das variáveis
+independentes.
+
+o Erro Percentual Absoluto Médio (MAPE - Mean Absolute Percentage
+Error): Fornece uma medida de erro em percentagem, facilitando a
+interpretabilidade.
+
+ \textbf{Validação Cruzada Temporal:} Técnicas de validação cruzada adaptadas para
+séries temporais serão empregadas durante o treinamento e a validação para
+otimizar os hiperparâmetros do modelo e mitigar o risco de overfitting,
+garantindo que o modelo generalize bem para novos períodos.
+
+ \textbf{Análise de Cenários e Sensibilidade:} Serão realizadas simulações com
+diferentes cenários (e.g., variações climáticas atípicas) para testar a robustez
+do modelo e sua capacidade de lidar com condições diversas.
+
+\textbf{2.8. Ferramentas e Tecnologias}
+
+As principais ferramentas e tecnologias que darão suporte ao desenvolvimento e
+implementação deste projeto incluem:
+
+ \textbf{Linguagem de Programação:} R, devido à sua robustez para análise estatística e
+a vasta quantidade de bibliotecas (sendo a linguagem com maior quantidade de
+bibliotecas gráficas e de análise de dados) visualização de dados e Machine
+Learning. Serão utilizados pacotes específicos como dplyr e tidyr para
+manipulação de dados, ggplot2 para visualização, Shiny para desenvolvimento
+web, uma variedade de pacotes para Machine Learning (e.g., caret, tidymodels,
+forecast para séries temporais, xgboost, LightGBM, e tensorflow/keras para
+redes neurais).
+Em futuro próximo também será adotado o uso da linguagem C para auxiliar na
+leutura e processamento de dados de forma mais eficiente.
+
+ \textbf{Ambiente de Desenvolvimento Integrado (IDE):} RStudio, para facilitar o
+desenvolvimento e a depuração do código.
+
+ \textbf{Controle de Versão:} Git e plataformas como GitHub/GitLab serão empregados
+para o gerenciamento colaborativo do código-fonte, rastreamento de alterações
+e controle de versões, essencial em projetos de longo prazo.
+
+ \textbf{Hospedagem e Implantação (Fase Posterior):}
+ 
+ Embora não faça parte da
+metodologia inicial de desenvolvimento, a implantação futura da aplicação em
+um ambiente acessível (e.g., ShinyApps.io, servidores na nuvem como Google
+Cloud ou AWS) será considerada para disponibilizar o dashboard e o modelo.
+O cronograma deste projeto é apresentado na tabela.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{ p{7.8cm} c c c c c c c }
+        \toprule
+                    &    Jan     &    Fev     &    Mar     &    Abr     &    Mai     &    Jun      &    \\
+        \midrule
+           1 Revisão Sistemática da Literatura 
+                    & $\bullet$ &  &  &            &            &             &    \\
+        \midrule
+             1.1. Definição Q. Pesquisa
+                    &            & $\bullet$ &  &            &            &             &    \\
+        \midrule
+            1.2. Definição String/Critérios
+                    &            & $\bullet$ &  &  &            &             &    \\              
+        \midrule
+             1.4. Seleção de Artigos (Triagem)
+                    &            &            & $\bullet$ &            &            &             &    \\
+        \midrule
+            2. Tratamento de dados
+                    &            &            &            & $\bullet$ & $\bullet$ & $\bullet$    &    \\
+        \bottomrule    
+    \end{tabular}
+    \caption{Cronograma de Janeiro a Junho de 2028}    
+    \label{tab:cronograma-1-2}
+\end{table}
+
+\begin{table}[hb]
+    \centering
+    \begin{tabular}{ p{7.8cm} c c c c c c c }
+        \toprule
+        &    Mai     &    Jun    &    Jul     &    Ago     &    Set     &    Out      &    
+            \\
+            \toprule
+            3. Desenvolvimento do Modelo Preditivo
+     &     \bullet$       &      \bullet$      & $\bullet$ &            &            &             &
+            \midrule
+           4. Testes de ajustes Finais
+     &     \bullet$       &      \bullet$      & $\bullet$ &            &            &             &
+            \midrule
+            Testes e Ajustes Finais
+     &     \bullet$       &      \bullet$      & $\bullet$ &            &            &             &
+            \midrule
+            Redação das Seções do Trabalho 
+      &     \bullet$       &      \bullet$      & $\bullet$ &            &            &             &
+            \midrule
+            Revisão Geral e Formatação (ABNT)
+      &     \bullet$       &      \bullet$      & $\bullet$ &            &            &             &
+            \midrule
+            Preparação para Apresentação e Entrega Final
+     &     \bullet$       &      \bullet$      & $\bullet$ &            &            &             &
+
+            
+            
+            
+        
+        \bottomrule    
+    \end{tabular}    
+        \label{tab:cronograma-2}
+\end{table}
+
+
+
+
+
+
+\bibliographystyle{abnt-num}
+\bibliography{exemplo} % Garanta que o 'exemplo.bib' existe e contém suas referências
+ALVES, Maria Cidinaria Silva et al. Bioinformática aplicada às ciências ômicas: uma breve revisão bibliográfica. Chapter, p. 02, jan. 2023. Disponível em:
+https://www.researchgate.net/publication/370410296. Acesso em: 28 jul. 2025.
+FONSECA, Vagner de Souza. Estudo da correlação entre frequência de códons em genomas virais e a abundância de espécies de RNA transportador cognato na célula hospedeira humana. 2013. 73 f. Trabalho de Conclusão de Curso (Bacharelado em Sistemas de Informação)– Universidade do Estado da Bahia (UNEB), Salvador, 2013.
+GITHUB. GitHub: Where the world builds software. [S. l.]: GitHub, [s.d.]. Disponível em:
+https://github.com. Acesso em: 15 jul. 2025.
+INSTITUTO BRASILEIRO DE GEOGRAFIA E ESTATÍSTICA (IBGE). [https://github.com/tbrugz/ribge].
+[S. l.]: GitHub, [Acesso em: 20 de julho de 2025]. Disponível em: https://www.reddit.com/r/DataHoarder/comments/xnv5qv/downloading_all_of_github_public_repositories/. Acesso em: 20 jul. 2025.
+INSTITUTO BRASILEIRO DE GEOGRAFIA E ESTATÍSTICA (IBGE). Dados do Censo 2022. [S. l.]: GitHub, 2024. Disponível em: https://github.com/ibge/dados-censo-2022. Acesso em: 28 jul. 2025.
+
+
+\end{document}
