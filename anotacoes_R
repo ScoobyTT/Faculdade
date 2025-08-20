@@ -2,7 +2,7 @@
 sudo chmod 777 /usr/lib/R/site-library
 
 ##exp:sudo chmod 777 nome_do_diretorio
-##dentro do diretorio adicionamos a pasta
+##dentro do repositorio vc fiz a ediçao pra ele ler a pasta, a partir disso ela fica comum pra todos usuarios. segue abaixo, se tiver duvida pergunta ao chat.
 sudo nano /etc/R/Renviron.site
 R_LIBS_SITE="/opt/r_library"/
 R_LIBS_USER=""
