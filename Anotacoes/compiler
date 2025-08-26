@@ -1,0 +1,7 @@
+//compilar diretamente no terminal
+g++ main.cpp -o main
+./main
+
+
+ //compioler poo
+g++ nome_do_arquivo nome_da_fun.cpp - nome_do_arquiovo
