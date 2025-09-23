@@ -1,53 +1,76 @@
 #include <iostream>
 #include <string>
-#include <cstdlib>
-#define TAM 10
+#include <stdlib.h>
+#define TAM 10 
 struct *ficha{
-    int ID;
-    int nota;
+    int id;
+    float nota;
     string nome;
+
 };
 
-int PEGA_BAHIA(ficha * n){
+void leitura(ficha n){
     using namespace std;
-    ficha aluno[TAM];
-    for(int i = 0; i < TAM; i++){
-        cout << "Digite o nome do aluno" << endl;
-        cin << aluno[i] -> nome;
-        cout << "Digite a matrícula do aluno" << endl;
-        cin aluno[i] -> ID;
-        cout << "Agora digite a nota do aluno" << endl;
-        cin << aluno -> nota;
-        if(nota <= 10 && nota >= 0){
-            cout << "sla tropa" << endl; 
-        }else cout << "nota inválida" << endl;
+    ind[tam];
+    ficha aluno;
 
+    cout << "Digite o nome do usuário" << endl;
+    cin >> aluno[i] -> nome;
+    cout << "Digite o ID do aluno" << endl;
+    cin >> aluno[i] -> id;
+    cout << "Agora digite a nota" << endl;
+    cin >> aluno[i] -> nota;
+}
+
+void troca(ficha aluno){
+    int a[tam]
+    int escolha;
+    cout << "Informe o ID do aluno desejado" << endl;
+    int id_de_procura;
+    for(int i; i < a; i++){
+        while(aluno[i]){
+            if(id_de_procura == aluno){
+                aluno -> nota = nullptr;
+                cout << "Reescreva a nota" << endl;
+                cin >> aluno[i] -> nota;
+                
+            }
+        }
     }
 }
 
+
 int main(){
     ficha aluno;
+    void menu(){
+    int escolha;
     do{
-        std::cout << "-----------------------------------------------\n"
-                  << "Inicio do cadastro \n"
-                  << "Digite a opção desejada"
-                  << "Digite: 1 para cadastrar o aluno"
-                  << "Digite: 2 para fechar o programa" 
-                  '<< "Digite: 3 para cadastrar outro aluno"' << endl;
-
-        int n = nullptr;
-        switch(n)
+        cout << "_____________________________________"
+             << "CADASTRO DE ALUNOS \N"
+             << "Didite as opções de escolha"
+             << "Digite: 1 para inicar o cadastro dos alunos"
+             << "Digite: 2 para sair do programa"
+            ' << "Digite "'
+            cin >> escolha;
+       switch (escolha) {
         case 1:
-        PEGA_BAHIA(aluno);
+        leitura(aluno);
         break;
+
         case 2:
-        std::cout << "Saindo" << endl;
+        cout << "Saindo..." << endl;
         exit();
-       'case 3:'
+
+        case 3:
+        troca(aluno);
+        break;
+
         default:
-        std::cout << "Opção inválida" << endl;
-    }while(case 3)
-    return 0;
+        cout << "opcao inválida" << endl;
+        break;
+    }
+    }while(!case 2);
+    }
+
+
 }
-
-
